@@ -94,9 +94,11 @@ def get_data(lang, data_split, AUG):
     if AUG=='LM' or AUG=='tags':
         filename = f'{augmented_data_dir}/{lang}-{data_split}-{AUG}.csv' if AUG!=None else f'{augmented_data_dir}/{lang}-{data_split}.csv'
         data = pd.read_csv(filename)
+        data = data.dropna()
+        data.to_csv(filename,index=False)
         data['length'] = data.sent.apply(lambda x:len(x.split()))
         df = data.drop(columns=['sent'])
-        df = test_df.rename(columns={'augmented_sen':'sent'})
+        df = df.rename(columns={'augmented_sen':'sent'})
         data = Dataset.from_pandas(df)
 
     else:
