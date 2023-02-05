@@ -92,7 +92,7 @@ def get_data(lang, data_split, AUG):
     augmented_data_dir = '../Data-Processing/Augmented-Dataset'
     conll_data_dir = '../Dataset'
     if AUG=='LM' or AUG=='tags':
-        filename = f'{augmented_data_dir}/{lang}-{data_split}-{AUG}.csv' if SET!=None else f'{augmented_data_dir}/{lang}-{data_split}.csv'
+        filename = f'{augmented_data_dir}/{lang}-{data_split}-{AUG}.csv' if AUG!=None else f'{augmented_data_dir}/{lang}-{data_split}.csv'
         data = pd.read_csv(filename)
         data['length'] = data.sent.apply(lambda x:len(x.split()))
         df = data.drop(columns=['sent'])
