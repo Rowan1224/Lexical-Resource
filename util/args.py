@@ -19,6 +19,10 @@ def create_arg_parser():
     )
 
     parser.add_argument(
+        "-d", "--dataset", default="train", type=str, help="which dataset to run the script on"
+    )
+
+    parser.add_argument(
         "-crf", "--crf", default=False, type=bool, help="true or false"
     )
 

@@ -12,12 +12,12 @@
 # In[ ]:
 
 
-#get_ipython().system('pip install transformers')
-#get_ipython().system('pip install datasets')
-#get_ipython().system('pip install evaluate')
-#get_ipython().system('pip install colorama')
-#get_ipython().system('pip install wikipedia-api')
-#get_ipython().system('pip install sentencepiece')
+# !pip install transformers
+# !pip install datasets
+# !pip install evaluate
+# !pip install colorama
+# !pip install wikipedia-api
+# !pip install sentencepiece
 
 
 # In[ ]:
@@ -41,6 +41,22 @@ from util.args import create_arg_parser
 # In[ ]:
 
 
+def write_tags():
+    tags = set()
+    for labels in data.labels.array:
+        for tag in labels.split():
+            tags.add(tag)
+
+    with open('../util/tags.txt','w') as file:
+        lines = "\n".join(list(tags))
+        file.write(lines)
+    
+    
+
+
+# In[ ]:
+
+
 from torch import cuda
 device = 'cuda' if cuda.is_available() else 'cpu'
 
@@ -57,16 +73,16 @@ torch.cuda.manual_seed_all(SEED)
 # In[ ]:
 args = create_arg_parser()
 
-LANG = args.language # use None for all lang
-SET = 'LM' # 'LM' or None
-EVAL_SET = 'test'
+LANG = args.language
+SET = args.set
+EVAL_SET = args.dataset
 
 
 # In[ ]:
 
 
-if LANG=='en' and SET=='LM':
-    get_ipython().system('python -m spacy download en_core_web_lg')
+# if LANG=='en':
+#     !python -m spacy download en_core_web_lg
 
 
 # ## Read Data
@@ -74,14 +90,21 @@ if LANG=='en' and SET=='LM':
 # In[ ]:
 
 
-filename = f'../Dataset/{LANG}-{EVAL_SET}.conll'
+filename = f'../Dataset/{LANG}/{LANG}_{EVAL_SET}.conll'
 data = prepare_data(filename)
 
 
 # In[ ]:
 
 
-data.head()
+data = data.dropna()
+data.shape
+
+
+# In[ ]:
+
+
+#write_tags()
 
 
 # ## Augment Info
@@ -92,8 +115,8 @@ data.head()
 from InformationExtraction import InformationExtractionPipeline
 infoPipeline = InformationExtractionPipeline(SET,
                                         max_sen = 2, lang = LANG, 
-                                        loadJson = True, jsonPath=f'./Wiki/{LANG}-wiki.json',
-                                            saveJson=True, saveJsonpath = f'./Wiki/{LANG}-test-wiki.json')
+                                        loadJson = False, jsonPath=f'./Wiki/{LANG}-wiki.json',
+                                            saveJson=True, saveJsonpath = f'./Wiki/{LANG}-wiki.json')
 
 
 # In[ ]:
@@ -117,5 +140,7 @@ print(f"Info Percentage: {info_percent*100:.2f}%")
 dir = f'./Augmented-Dataset'
 if not os.path.exists(dir):
     os.mkdir(dir)
-data.to_csv(f'{dir}/{LANG}-test.csv',index=False)
+    
+filename = f'{dir}/{LANG}-{EVAL_SET}-{SET}.csv'
+data.to_csv(filename,index=False)
 
