@@ -96,7 +96,7 @@ def get_data(lang, data_split, AUG):
         data = pd.read_csv(filename)
         data['length'] = data.sent.apply(lambda x:len(x.split()))
         df = data.drop(columns=['sent'])
-        df = test_df.rename(columns={'augmented_sen':'sent'})
+        df = df.rename(columns={'augmented_sen':'sent'})
         data = Dataset.from_pandas(df)
 
     else:
