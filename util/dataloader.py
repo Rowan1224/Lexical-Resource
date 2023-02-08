@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import torch
 import numpy as np
-from tokenizers import AddedToken
 import re
 
 @dataclass
@@ -62,50 +61,31 @@ class PreDataCollator:
                              max_length=self.max_len)
 
         # creating token tags only for first word pieces of each tokenized word
-        if self.Set!='test':
-            word_tags = tags.split()
-            tags = [self.tags_to_ids[tag] for tag in word_tags]
-            # code based on https://huggingface.co/transformers/custom_datasets.html#tok-ner
-            # creating an empty array of -100 of length max_length
-            encoded_tags = np.ones(len(encoding["offset_mapping"]), dtype=int) * -100
+        # if self.Set!='test':
 
-            # setting only tags whose first offset position is 0 and the second is not 0
-            
-            i = 0
-            for idx, mapping in enumerate(encoding["offset_mapping"]):
-                if mapping[0] == 0 and mapping[1] != 0 and encoding['input_ids'][idx]!=6:
-                    # overwrite the tag
-                    try:
-                        if i>= len(word_tags):
-                            continue
-                        encoded_tags[idx] = tags[i]
-                        i += 1
-                    except:
-    #                     print(encoding["offset_mapping"])
-    #                     print(i)
-                        print(sentence)
-    #                     print(len(tags), tags[i])
-                
 
             
-            
-            
-        else:
-            encoded_tags = np.ones(len(encoding["offset_mapping"]), dtype=int) * -100
-            i = 0
-            for idx, mapping in enumerate(encoding["offset_mapping"]):
-                if mapping[0] == 0 and mapping[1] != 0 and encoding['input_ids'][idx]!=6:
-                    # overwrite the tag
-                    try:
-                        if i>= label_count:
-                            continue
-                        encoded_tags[idx] = 0
-                        i += 1
-                    except:
-    #                     print(encoding["offset_mapping"])
-    #                     print(i)
-                        print(sentence)
-    #                     print(len(tags), tags[i])
+        word_tags = tags.split()
+        tags = [self.tags_to_ids[tag] for tag in word_tags]
+        # code based on https://huggingface.co/transformers/custom_datasets.html#tok-ner
+        # creating an empty array of -100 of length max_length
+        encoded_tags = np.ones(len(encoding["offset_mapping"]), dtype=int) * -100
+
+        # setting only tags whose first offset position is 0 and the second is not 0
+        
+        i = 0
+        for idx, mapping in enumerate(encoding["offset_mapping"]):
+            if mapping[0] == 0 and mapping[1] != 0 and encoding['input_ids'][idx]!=6:
+                # overwrite the tag
+                try:
+                    if i>= len(word_tags):
+                        continue
+                    encoded_tags[idx] = tags[i]
+                    i += 1
+                except:
+#                     print(encoding["offset_mapping"])
+#                     print(i)
+                    print(sentence)
 
         # turning everything into PyTorch tensors
         item = {key: torch.as_tensor(val) for key, val in encoding.items()}

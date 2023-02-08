@@ -18,7 +18,7 @@ def read_data(file):
     for j,line in enumerate(lines[1:]):
     
     
-        if len(line)>0 and line[0] =='#':
+        if len(line)>0 and '# id' in line and 'domain=' in line:
             sentences.append(lines[i:j+1])
             i = j+1
         if len(line)==1:
@@ -56,12 +56,20 @@ def prepare_data(file):
         label = []
         for entry in item[1:]:
             
+        
             entry = entry.split('_ _')
             tokens.append(entry[0])
             try: 
-                label.append(entry[1])
+                tag = entry[1].strip()
+                if '_' in tag and len(tag)>1:
+                    tag = tag[-1]
+
+                label.append(tag)
+                
+
             except:
                 label.append(None)
+  
         
         assert len(label)==len(tokens) 
         
