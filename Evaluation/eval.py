@@ -52,10 +52,10 @@ def main():
         SET = None
     else:
         SET = args.set
-    EVAL_SET = args.eval_set
+    EVAL_SET = args.dataset
     
 
-    model_dir = f"../Experiment/output/{MODEL_NAME}-{LANG}-{SET}" if SET!=None else f"../Experiment/output/{MODEL_NAME}-{LANG}"
+    model_dir = f"../Experiment/output/{MODEL_NAME}-{LANG}-{SET}/Final" if SET!=None else f"../Experiment/output/{MODEL_NAME}-{LANG}/Final"
 
 
 
@@ -93,7 +93,7 @@ def main():
 
 
 
-    dataloader = DataLoader(test_tokenized, batch_size=12)
+    dataloader = DataLoader(test_tokenized, batch_size=args.batch_size)
     outputs = []
     preds = []
     true = []
