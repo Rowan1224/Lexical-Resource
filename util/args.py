@@ -37,6 +37,14 @@ def create_arg_parser():
     parser.add_argument(
         "-lr", "--learning_rate", default=1e-04, type=float, help="change lr for bigger models eg. xlm-roberta-large"
     )
-
+    parser.add_argument(
+        "-nf", "--num_features", default=20, type=int, help="number of features (lime)"
+    )
+    parser.add_argument(
+        "-ns", "--num_samples", default=20, type=int, help="number of samples (lime)"
+    )
+    parser.add_argument(
+        "-i", "--index", default=1, type=int, help="sentence index(lime)"
+    )
     args = parser.parse_args()
     return args

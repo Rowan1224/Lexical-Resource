@@ -169,12 +169,16 @@ else:
     data = prepare_data(filename)
     output = pd.read_csv(f'./{LANG}/{EVAL_SET}/outputs-{MODEL_NAME}.csv')
     data['predictions'] = output['predictions'].array
+    data['augmented_sen'] = data['sent']
 
 
 # In[18]:
 
 if args.language == "zh":
-    model = NERExplainerGenerator(f'../Experiment/output/{MODEL_NAME}-{LANG}-{SET}/Final', len(tags), device)
+    if SET == None:
+        model = NERExplainerGenerator(f'../Experiment/output/{MODEL_NAME}-{LANG}/Final', len(tags), device)
+    else:
+        model = NERExplainerGenerator(f'../Experiment/output/{MODEL_NAME}-{LANG}-{SET}/Final', len(tags), device)
 else:
     if SET == None:
         model = NERExplainerGenerator(f'../Experiment/output/{MODEL_NAME}-{LANG}', len(tags), device)
